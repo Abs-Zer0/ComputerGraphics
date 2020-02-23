@@ -1,0 +1,5 @@
+rootProject.name = 'JavaComputerGraphics'
+
+include ':ForOpenGL'
+include ':ForRayTracing'
+
