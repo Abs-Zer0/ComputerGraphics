@@ -1,1 +1,15 @@
 description = 'ForRayTracing'
+
+mainClassName = 'my.graphics.rt.App'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile group: 'org.apache.commons', name: 'commons-math3', version: '3.6.1'
+}
+
+jar {
+    manifest.attributes("Main-Class": mainClassName);   
+}
