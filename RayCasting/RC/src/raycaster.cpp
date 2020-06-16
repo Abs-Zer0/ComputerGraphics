@@ -1,5 +1,9 @@
-#include "raycaster.h"
+#include "../include/raycaster.h"
 
-RayCaster::RayCaster()
+rc::RayCaster::RayCaster(Scene *s)
 {
+}
+
+rc::RayCaster::~RayCaster(){
+
 }
