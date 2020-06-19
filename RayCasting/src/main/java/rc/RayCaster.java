@@ -17,7 +17,7 @@ import rc.scene.lights.*;
 /**
  *
  * @author Абс0лютный Н0ль
- * 
+ *
  * Класс рендер-машины, которая рендерит выбранную сцену
  */
 public class RayCaster {
@@ -28,31 +28,32 @@ public class RayCaster {
     private Light[] lights;
 
     /**
-    * Создаёт экземпляр класса с сценой для рендера - scene, глубиной рекурсии - depth
-    */
+     * Создаёт экземпляр класса с сценой для рендера - scene, глубиной рекурсии
+     * - depth
+     */
     public RayCaster(Scene scene, int depth) {
         this.scene = scene;
         setRecursionDepth(depth);
     }
 
     /**
-    * Создаёт экземпляр класса с сценой для рендера - scene
-    */
+     * Создаёт экземпляр класса с сценой для рендера - scene
+     */
     public RayCaster(Scene scene) {
         this(scene, 10);
     }
 
     /**
-    * Глубина рекурсии
-    */
+     * Глубина рекурсии
+     */
     public int getRecursionDepth() {
         return this.depth;
     }
 
     /**
-    * Назначение глубины рекурсии
-    * Возвращает реально установленную глубину рекурсии, 1 если было передано значение < 1
-    */
+     * Назначение глубины рекурсии Возвращает реально установленную глубину
+     * рекурсии, 1 если было передано значение < 1
+     */
     public int setRecursionDepth(int value) {
         this.depth = depth < 1 ? 1 : depth;
 
@@ -60,9 +61,8 @@ public class RayCaster {
     }
 
     /**
-    * Функция рендеринга сцены
-    * Возвращает отрендеренное изображение
-    */
+     * Функция рендеринга сцены Возвращает отрендеренное изображение
+     */
     public BufferedImage render(int width, int height) {
         this.shapes = this.scene.getFlattenObjects().parallelStream()
                 .filter(obj -> obj instanceof RenderObject)
@@ -92,8 +92,8 @@ public class RayCaster {
     }
 
     /**
-    * Сложная формула вычисления цвета, принесённого лучом
-    */
+     * Сложная формула вычисления цвета, принесённого лучом
+     */
     private Color formula(Ray ray, double far, int depth) {
         if (depth < 0) {
             return Color.black();
@@ -137,10 +137,18 @@ public class RayCaster {
             result = result.add(diffuse).product(0.5);
             result = result.add(phong.product(0.5));
 
+            double reflect_sub_alpha = materialReflection - materialColor.getAlpha();
+            if (reflect_sub_alpha > 0.0) {
+                double scale = 1.0 / (reflect_sub_alpha + 1);
+                materialReflection *= scale;
+                materialColor.setAlpha(1.0 - materialColor.getAlpha() * scale);
+            }
+
             if (materialReflection > 0.0 && target.getType() != RayType.OUT) {
                 final Ray reflected = _ray.reflected(target.getNormal());
 
-                result = result.add(formula(reflected, far, depth - 1).product(0.2 * materialReflection));
+                //result = result.add(formula(reflected, far, depth - 1).product(materialReflection));
+                result = result.alphaBlend(formula(reflected, far, depth - 1), materialReflection);
             }
 
             if (materialColor.getAlpha() < 1.0 && materialRefraction > 0.0) {
@@ -155,8 +163,8 @@ public class RayCaster {
                 if (refracted != null) {
                     double k = (1.0 - materialColor.getAlpha());
                     //result=result.product(materialColor.getAlpha());
-                    result = result.add(formula(refracted, far, depth - 1).product(k));
-                    //result = result.alphaBlend(formula(refracted, far, depth - 1), k);
+                    //result = result.add(formula(refracted, far, depth - 1).product(k));
+                    result = result.alphaBlend(formula(refracted, far, depth - 1), k);
                 }
             }
 
@@ -167,10 +175,10 @@ public class RayCaster {
     }
 
     /**
-    * Функция проверки на препядствия на пути теневого луча
-    * Возвращает цвет источника света - если нет препядствий, затемнённый цвет источника света -
-    * если есть препядствия
-    */
+     * Функция проверки на препядствия на пути теневого луча Возвращает цвет
+     * источника света - если нет препядствий, затемнённый цвет источника света
+     * - если есть препядствия
+     */
     private Color checkShadowRay(ShadowRay shadow) {
         final ShadowRay _shadow = shadow;
 
@@ -184,9 +192,9 @@ public class RayCaster {
     }
 
     /**
-    * Функция изменения размеров отрендеренного изображения до необходимых размеров
-    * Возвращает изображение с новыми размерами
-    */
+     * Функция изменения размеров отрендеренного изображения до необходимых
+     * размеров Возвращает изображение с новыми размерами
+     */
     private BufferedImage resizedImage(BufferedImage src, int newWidth, int newHeight) {
         final Image tmp = src.getScaledInstance(newWidth, newHeight, Image.SCALE_SMOOTH);
         final BufferedImage result = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_RGB);

@@ -8,7 +8,7 @@ package rc.math;
 /**
  *
  * @author Абс0лютный Н0ль
- * 
+ *
  * Класс вектора в двумерном пространстве
  */
 public class Vector2 {
@@ -38,57 +38,57 @@ public class Vector2 {
     }
 
     /**
-    * Противоположный вектор
-    */
+     * Противоположный вектор
+     */
     public Vector2 negate() {
         return new Vector2(-this.x, -this.y);
     }
 
     /**
-    * Сложение векторов
-    */
+     * Сложение векторов
+     */
     public Vector2 add(Vector2 other) {
         return new Vector2(this.x + other.x, this.y + other.y);
     }
 
     /**
-    * Вычитание векторов
-    */
+     * Вычитание векторов
+     */
     public Vector2 subtract(Vector2 other) {
         return new Vector2(this.x - other.x, this.y - other.y);
     }
 
     /**
-    * Умножение вектора на число
-    */
+     * Умножение вектора на число
+     */
     public Vector2 product(double value) {
         return new Vector2(this.x * value, this.y * value);
     }
 
     /**
-    * Скалярное произведение векторов
-    */
+     * Скалярное произведение векторов
+     */
     public double product(Vector2 other) {
         return this.x * other.x + this.y * other.y;
     }
 
     /**
-    * Длина вектора в квадрате
-    */
+     * Длина вектора в квадрате
+     */
     public double sqrLength() {
         return this.x * this.x + this.y * this.y;
     }
 
     /**
-    * Длина вектора
-    */
+     * Длина вектора
+     */
     public double lenght() {
         return Math.sqrt(sqrLength());
     }
 
     /**
-    * Нормализация вектора
-    */
+     * Нормализация вектора
+     */
     public void normalize() {
         double scale = 1.0 / lenght();
         this.x = this.x * scale;
@@ -96,8 +96,8 @@ public class Vector2 {
     }
 
     /**
-    * Нормализованный вектор
-    */
+     * Нормализованный вектор
+     */
     public Vector2 normalized() {
         Vector2 res = new Vector2(this);
         res.normalize();
@@ -105,8 +105,8 @@ public class Vector2 {
     }
 
     /**
-    * Расстояние между точками в квадрате
-    */
+     * Расстояние между точками в квадрате
+     */
     public double sqrDistance(Vector2 other) {
         double dx = this.x - other.x;
         double dy = this.y - other.y;
@@ -115,8 +115,8 @@ public class Vector2 {
     }
 
     /**
-    * Расстояние между точками
-    */
+     * Расстояние между точками
+     */
     public double distance(Vector2 other) {
         return Math.sqrt(sqrDistance(other));
     }
@@ -141,6 +141,11 @@ public class Vector2 {
         hash = 67 * hash + (int) (Double.doubleToLongBits(this.x) ^ (Double.doubleToLongBits(this.x) >>> 32));
         hash = 67 * hash + (int) (Double.doubleToLongBits(this.y) ^ (Double.doubleToLongBits(this.y) >>> 32));
         return hash;
+    }
+
+    @Override
+    public Vector2 clone() {
+        return new Vector2(this.x, this.y);
     }
 
     public static Vector2 zero() {

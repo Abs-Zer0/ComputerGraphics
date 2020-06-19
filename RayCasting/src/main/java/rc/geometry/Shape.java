@@ -16,7 +16,7 @@ import rc.math.Ray;
  */
 public abstract class Shape {
 
-    private Material material;
+    protected Material material;
 
     /**
     * —оздаЄт экземпл€р класса с заданным материалом - material
@@ -60,4 +60,7 @@ public abstract class Shape {
 
     @Override
     public abstract int hashCode();
+    
+    @Override
+    public abstract Shape clone();
 }

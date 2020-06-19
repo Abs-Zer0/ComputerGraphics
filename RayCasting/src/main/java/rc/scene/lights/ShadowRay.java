@@ -45,7 +45,7 @@ public class ShadowRay {
      * @return 
      */
     public double lenghtRay() {
-        return this.light.getGlobalPostion().subtract(this.ray.getOrigin()).lenght();
+        return this.light.getGlobalPosition().subtract(this.ray.getOrigin()).lenght();
     }
 
     /**

@@ -16,7 +16,7 @@ import rc.scene.Transform;
 /**
  *
  * @author Абс0лютный Н0ль
- * 
+ *
  * Класс фигуры треугольник
  */
 public class Triangle extends Shape {
@@ -24,8 +24,9 @@ public class Triangle extends Shape {
     private Vector2 A = Vector2.zero(), B = Vector2.i(), C = Vector2.j();
 
     /**
-    * Создаёт экземпляр класса по 3 точкам в двумерном пространстве с заданным материалом
-    */
+     * Создаёт экземпляр класса по 3 точкам в двумерном пространстве с заданным
+     * материалом
+     */
     public Triangle(Vector2 a, Vector2 b, Vector2 c, Material material) {
         super(material);
         setA(a);
@@ -34,8 +35,8 @@ public class Triangle extends Shape {
     }
 
     /**
-    * Создаёт экземпляр класса по 3 точкам в двумерном пространстве
-    */
+     * Создаёт экземпляр класса по 3 точкам в двумерном пространстве
+     */
     public Triangle(Vector2 a, Vector2 b, Vector2 c) {
         this(a, b, c, null);
     }
@@ -79,20 +80,21 @@ public class Triangle extends Shape {
     }
 
     /**
-    * Функция вычисления пересечения луча ray с треугольником в заданной позиции transform
-    * Возвращает результаты, необходимые для дальнейших рассчётов
-    */
+     * Функция вычисления пересечения луча ray с треугольником в заданной
+     * позиции transform Возвращает результаты, необходимые для дальнейших
+     * рассчётов
+     */
     @Override
     public IntersectResult isIntersected(Ray ray, Transform transform) {
         final Ray _ray = ray;
         final Transform _transform = transform;
 
         final Vector3 a = new Vector3(this.A).multi(_transform.getRotationMatrix())
-                .add(_transform.getGlobalPostion());
+                .add(_transform.getGlobalPosition());
         final Vector3 b = new Vector3(this.B).multi(_transform.getRotationMatrix())
-                .add(_transform.getGlobalPostion());
+                .add(_transform.getGlobalPosition());
         final Vector3 c = new Vector3(this.C).multi(_transform.getRotationMatrix())
-                .add(_transform.getGlobalPostion());
+                .add(_transform.getGlobalPosition());
 
         final Vector3 b_sub_a = b.subtract(a);
         final Vector3 c_sub_a = c.subtract(a);
@@ -149,5 +151,10 @@ public class Triangle extends Shape {
         hash = 79 * hash + Objects.hashCode(this.B);
         hash = 79 * hash + Objects.hashCode(this.C);
         return hash;
+    }
+
+    @Override
+    public Shape clone() {
+        return new Triangle(this.A.clone(), this.B.clone(), this.C.clone(), this.material.clone());
     }
 }

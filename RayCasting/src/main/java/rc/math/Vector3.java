@@ -8,7 +8,7 @@ package rc.math;
 /**
  *
  * @author Абс0лютный Н0ль
- * 
+ *
  * Класс вектора в трёхмерном пространстве
  */
 public class Vector3 {
@@ -44,43 +44,43 @@ public class Vector3 {
     }
 
     /**
-    * Противоположный вектор
-    */
+     * Противоположный вектор
+     */
     public Vector3 negate() {
         return new Vector3(-this.x, -this.y, -this.z);
     }
 
     /**
-    * Сложение векторов
-    */
+     * Сложение векторов
+     */
     public Vector3 add(Vector3 other) {
         return new Vector3(this.x + other.x, this.y + other.y, this.z + other.z);
     }
 
     /**
-    * Вычитание векторов
-    */
+     * Вычитание векторов
+     */
     public Vector3 subtract(Vector3 other) {
         return new Vector3(this.x - other.x, this.y - other.y, this.z - other.z);
     }
 
     /**
-    * Умножение вектора на число
-    */
+     * Умножение вектора на число
+     */
     public Vector3 product(double value) {
         return new Vector3(this.x * value, this.y * value, this.z * value);
     }
 
     /**
-    * Скалярное произведение векторов
-    */
+     * Скалярное произведение векторов
+     */
     public double product(Vector3 other) {
         return this.x * other.x + this.y * other.y + this.z * other.z;
     }
 
     /**
-    * Векторное произведение векторов
-    */
+     * Векторное произведение векторов
+     */
     public Vector3 X(Vector3 other) {
         double nx = this.y * other.z - this.z * other.y;
         double ny = this.z * other.x - this.x * other.z;
@@ -90,8 +90,8 @@ public class Vector3 {
     }
 
     /**
-    * Умножение вектора на матрицу
-    */
+     * Умножение вектора на матрицу
+     */
     public Vector3 multi(Matrix3x3 mat) {
         double nx = mat.x11 * this.x + mat.x21 * this.y + mat.x31 * this.z;
         double ny = mat.x12 * this.x + mat.x22 * this.y + mat.x32 * this.z;
@@ -101,22 +101,22 @@ public class Vector3 {
     }
 
     /**
-    * Длина вектора в квадрате
-    */
+     * Длина вектора в квадрате
+     */
     public double sqrLength() {
         return this.x * this.x + this.y * this.y + this.z * this.z;
     }
 
     /**
-    * Длина вектора
-    */
+     * Длина вектора
+     */
     public double lenght() {
         return Math.sqrt(sqrLength());
     }
 
     /**
-    * Нормализация вектора
-    */
+     * Нормализация вектора
+     */
     public void normalize() {
         double scale = 1.0 / lenght();
         this.x = this.x * scale;
@@ -125,8 +125,8 @@ public class Vector3 {
     }
 
     /**
-    * Нормализованный вектор
-    */
+     * Нормализованный вектор
+     */
     public Vector3 normalized() {
         Vector3 res = new Vector3(this);
         res.normalize();
@@ -134,8 +134,8 @@ public class Vector3 {
     }
 
     /**
-    * Расстояние между точками в квадрате
-    */
+     * Расстояние между точками в квадрате
+     */
     public double sqrDistance(Vector3 other) {
         double dx = this.x - other.x;
         double dy = this.y - other.y;
@@ -145,24 +145,24 @@ public class Vector3 {
     }
 
     /**
-    * Расстояние между точками
-    */
+     * Расстояние между точками
+     */
     public double distance(Vector3 other) {
         return Math.sqrt(sqrDistance(other));
     }
 
     /**
-    * Отражение вектора относительно другого
-    * this - 2.0 * (this * other) * other
+     * Отражение вектора относительно другого this - 2.0 * (this * other) *
+     * other
      */
     public Vector3 reflected(Vector3 other) {
         return this.subtract(other.product(this.product(other)).product(2.0));
     }
 
     /**
-    * Преломление вектора относительно другого на коэффициент - k
-    * (1/k) * this - (cos(b) + (1/k) * (this * other)) * other
-    * cos(b) = sqrt(1 - (1/k)2 * (1 - (this * other)2))
+     * Преломление вектора относительно другого на коэффициент - k (1/k) * this
+     * - (cos(b) + (1/k) * (this * other)) * other cos(b) = sqrt(1 - (1/k)2 * (1
+     * - (this * other)2))
      */
     public Vector3 refracted(Vector3 other, double k) {
         double nk = 1.0 / k;
@@ -201,6 +201,11 @@ public class Vector3 {
         hash = 43 * hash + (int) (Double.doubleToLongBits(this.y) ^ (Double.doubleToLongBits(this.y) >>> 32));
         hash = 43 * hash + (int) (Double.doubleToLongBits(this.z) ^ (Double.doubleToLongBits(this.z) >>> 32));
         return hash;
+    }
+
+    @Override
+    public Vector3 clone() {
+        return new Vector3(this.x, this.y, this.z);
     }
 
     @Override

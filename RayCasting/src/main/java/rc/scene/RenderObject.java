@@ -12,7 +12,7 @@ import rc.math.*;
 /**
  *
  * @author Абс0лютный Н0ль
- * 
+ *
  * Класс объекта, который необходимо отрисовать
  */
 public class RenderObject extends Transform {
@@ -20,68 +20,69 @@ public class RenderObject extends Transform {
     public Shape shape;
 
     /**
-    * Создаёт экземпляр класса с заданной фигурой - shape, позицией - pos, поворотом - rot,
-    * списком дочерних объектов - children
-    */
+     * Создаёт экземпляр класса с заданной фигурой - shape, позицией - pos,
+     * поворотом - rot, списком дочерних объектов - children
+     */
     public RenderObject(Shape shape, Vector3 pos, Vector3 rot, Collection<? extends Transform> children) {
         super(pos, rot, children);
         this.shape = shape;
     }
 
     /**
-    * Создаёт экземпляр класса с заданной фигурой - shape, позицией - pos, поворотом - rot
-    */
+     * Создаёт экземпляр класса с заданной фигурой - shape, позицией - pos,
+     * поворотом - rot
+     */
     public RenderObject(Shape shape, Vector3 pos, Vector3 rot) {
         this(shape, pos, rot, null);
     }
 
     /**
-    * Создаёт экземпляр класса с заданной фигурой - shape, позицией - pos
-    */
+     * Создаёт экземпляр класса с заданной фигурой - shape, позицией - pos
+     */
     public RenderObject(Shape shape, Vector3 pos) {
         this(shape, pos, null);
     }
 
     /**
-    * Создаёт экземпляр класса с заданной фигурой - shape
-    */
+     * Создаёт экземпляр класса с заданной фигурой - shape
+     */
     public RenderObject(Shape shape) {
         this(shape, null);
     }
 
     /**
-    * Создаёт экземпляр класса с заданной позицией - pos, поворотом - rot,
-    * списком дочерних объектов - children
-    */
+     * Создаёт экземпляр класса с заданной позицией - pos, поворотом - rot,
+     * списком дочерних объектов - children
+     */
     public RenderObject(Vector3 pos, Vector3 rot, Collection<? extends Transform> children) {
         super(pos, rot, children);
     }
 
     /**
-    * Создаёт экземпляр класса с заданной позицией - pos, поворотом - rot
-    */
+     * Создаёт экземпляр класса с заданной позицией - pos, поворотом - rot
+     */
     public RenderObject(Vector3 pos, Vector3 rot) {
         this(pos, rot, null);
     }
 
     /**
-    * Создаёт экземпляр класса с заданной позицией - pos
-    */
+     * Создаёт экземпляр класса с заданной позицией - pos
+     */
     public RenderObject(Vector3 pos) {
         this(pos, null);
     }
 
     /**
-    * Создаёт базовый экземпляр класса 
-    */
+     * Создаёт базовый экземпляр класса
+     */
     public RenderObject() {
         this(Vector3.zero(), null);
     }
 
     /**
-    * Функция вычисления пересечения луча с объектом
-    * Возвращает результаты, необходимые для дальнейших рассчётов
-    */
+     * Функция вычисления пересечения луча с объектом Возвращает результаты,
+     * необходимые для дальнейших рассчётов
+     */
     public IntersectResult isIntersected(Ray ray) {
         return this.shape != null ? this.shape.isIntersected(ray, this) : IntersectResult.miss();
     }
@@ -99,8 +100,7 @@ public class RenderObject extends Transform {
         return res.min(Comparator.comparing(IntersectResult::getDistance)).get();
 
     }
-    */
-    
+     */
     @Override
     public boolean equals(Object obj) {
         if (obj == null || obj.getClass() != this.getClass()) {
@@ -126,5 +126,19 @@ public class RenderObject extends Transform {
         int hash = 5;
         hash = 53 * hash + Objects.hashCode(this.shape);
         return hash;
+    }
+
+    @Override
+    public RenderObject clone() {
+        if (this.shape != null) {
+            return new RenderObject(this.shape.clone(),
+                    this.globalPosition.clone(),
+                    this.globalRotation.clone(),
+                    (Vector<Transform>) this.children.clone());
+        } else {
+            return new RenderObject(this.globalPosition.clone(),
+                    this.globalRotation.clone(),
+                    (Vector<Transform>) this.children.clone());
+        }
     }
 }

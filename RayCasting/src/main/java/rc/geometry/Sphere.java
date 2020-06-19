@@ -74,7 +74,7 @@ public class Sphere extends Shape {
             return IntersectResult.miss();
         }
         
-        final Vector3 deltaPosition = _ray.getOrigin().subtract(_transform.getGlobalPostion());
+        final Vector3 deltaPosition = _ray.getOrigin().subtract(_transform.getGlobalPosition());
         double k = _ray.getDirection().product(deltaPosition) * scale;
         double c = (deltaPosition.sqrLength() - this.radius * this.radius) * scale;
         final Double D = Math.sqrt(k * k - c);
@@ -89,14 +89,14 @@ public class Sphere extends Shape {
             double min = Math.min(t1, t2);
             final Vector3 originNormal = _ray.getOrigin().add(_ray.getDirection().product(min));
             final RayType rayType = Math.abs(t1 - t2) < Constants.tolerance ? RayType.TANGENT : RayType.IN;
-            final Ray normal = new Ray(originNormal, originNormal.subtract(_transform.getGlobalPostion()));
+            final Ray normal = new Ray(originNormal, originNormal.subtract(_transform.getGlobalPosition()));
             
             return new IntersectResult(this, normal, rayType, min);
         } else {
             double max = Math.max(t1, t2);
             if (max > Constants.tolerance) {
                 final Vector3 originNormal = _ray.getOrigin().add(_ray.getDirection().product(max));
-                final Ray normal = new Ray(originNormal, originNormal.subtract(_transform.getGlobalPostion()));
+                final Ray normal = new Ray(originNormal, originNormal.subtract(_transform.getGlobalPosition()));
                 
                 return new IntersectResult(this, normal, RayType.OUT, max);
             } else {
@@ -125,6 +125,11 @@ public class Sphere extends Shape {
         int hash = 7;
         hash = 47 * hash + (int) (Double.doubleToLongBits(this.radius) ^ (Double.doubleToLongBits(this.radius) >>> 32));
         return hash;
+    }
+
+    @Override
+    public Shape clone() {
+        return new Sphere(this.radius, this.material.clone());
     }
     
 }

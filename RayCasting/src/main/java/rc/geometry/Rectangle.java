@@ -141,4 +141,9 @@ public class Rectangle extends Shape {
         hash = 97 * hash + (int) (Double.doubleToLongBits(this.height) ^ (Double.doubleToLongBits(this.height) >>> 32));
         return hash;
     }
+
+    @Override
+    public Shape clone() {
+        return new Rectangle(this.width, this.height, this.material.clone());
+    }
 }

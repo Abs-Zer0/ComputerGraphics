@@ -8,6 +8,9 @@ package rc;
 import java.util.Comparator;
 import java.util.Optional;
 import java.util.Vector;
+import rc.geometry.Sphere;
+import rc.scene.RenderObject;
+import rc.scene.Transform;
 import rc.ui.MainWindow;
 
 /**

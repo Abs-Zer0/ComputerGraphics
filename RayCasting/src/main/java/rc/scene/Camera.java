@@ -12,10 +12,11 @@ import rc.math.Vector3;
 /**
  *
  * @author Абс0лютный Н0ль
- * 
+ *
  * Класс камеры
  */
-public class Camera{
+public class Camera {
+
     public final Transform transform;
     public final Integer width;
     public final Integer height;
@@ -25,9 +26,14 @@ public class Camera{
     private double localFar;
 
     /**
-    * Создаёт экземпляр класса с положением наблюдателя - transform, моделью экрана - width * height,
-    * углом обзора - fov, дальностью прорисовки - far
-    */
+     * Создаёт экземпляр класса
+     *
+     * @param transform положение наблюдателя
+     * @param width кол-во пикселей модели экрана по горизонтали
+     * @param height кол-во пикселей модели экрана по вертикали
+     * @param fov угол обзора
+     * @param far дальность прорисовки
+     */
     public Camera(Transform transform, int width, int height, double fov, double far) {
         this.transform = transform != null ? transform : Transform.zero();
 
@@ -40,58 +46,98 @@ public class Camera{
     }
 
     /**
-    * Создаёт экземпляр класса с положением наблюдателя - transform, моделью экрана - width * height,
-    * углом обзора - fov
-    */
+     * Создаёт экземпляр класса
+     *
+     * @param transform положение наблюдателя
+     * @param width кол-во пикселей модели экрана по горизонтали
+     * @param height кол-во пикселей модели экрана по вертикали
+     * @param fov угол обзора
+     */
     public Camera(Transform transform, int width, int height, double fov) {
         this(transform, width, height, fov, 100.0);
     }
 
     /**
-    * Создаёт экземпляр класса с положением наблюдателя - transform, моделью экрана - width * height
-    */
+     * Создаёт экземпляр класса
+     *
+     * @param transform положение наблюдателя
+     * @param width кол-во пикселей модели экрана по горизонтали
+     * @param height кол-во пикселей модели экрана по вертикали
+     */
     public Camera(Transform transform, int width, int height) {
         this(transform, width, height, 90.0);
     }
 
     /**
-    * Создаёт экземпляр класса с моделью экрана - width * height
-    */
-    public Camera(int width, int height) {
-        this(Transform.zero(), width, height);
+     * Создаёт экземпляр класса
+     *
+     * @param width кол-во пикселей модели экрана по горизонтали
+     * @param height кол-во пикселей модели экрана по вертикали
+     * @param fov угол обзора
+     * @param far дальность прорисовки
+     */
+    public Camera(int width, int height, double fov, double far) {
+        this(Transform.zero(), width, height, fov, far);
     }
 
     /**
-    * Создаёт базовый экземпляр класса 
-    */
+     * Создаёт экземпляр класса
+     *
+     * @param width кол-во пикселей модели экрана по горизонтали
+     * @param height кол-во пикселей модели экрана по вертикали
+     * @param fov угол обзора
+     */
+    public Camera(int width, int height, double fov) {
+        this(width, height, fov, 100.0);
+    }
+
+    /**
+     * Создаёт экземпляр класса
+     *
+     * @param width кол-во пикселей модели экрана по горизонтали
+     * @param height кол-во пикселей модели экрана по вертикали
+     */
+    public Camera(int width, int height) {
+        this(width, height, 90.0);
+    }
+
+    /**
+     * Создаёт базовый экземпляр класса
+     */
     public Camera() {
         this(800, 480);
     }
 
     /**
-    * Угол обзора
-    */
+     * Угол обзора
+     */
     public double getFov() {
         return this.fov;
     }
 
     /**
-    * Назначение угла обзора
-    */
+     * Назначение угла обзора
+     */
     public void setFov(double fov) {
-        if (fov >= 180.0) this.fov = fov % 180.0;
-        else if (fov < 0) this.fov = 180.0 - fov;
-        else this.fov = fov;
+        if (fov >= 180.0) {
+            this.fov = fov % 180.0;
+        } else if (fov < 0) {
+            this.fov = 180.0 - fov;
+        } else {
+            this.fov = fov;
+        }
 
         double tg = Math.tan(Angle.getRadians(0.5 * this.fov));
         this.localFar = Math.sqrt(this.width * this.width + this.height * this.height) / tg;
     }
 
     /**
-    * Создание луча от положения наблюдателя через точки модели экрана x и y
-    */
+     * Создание луча от положения наблюдателя через точки модели экрана x и y
+     */
     public Ray castRay(double x, double y) {
-        if (x < 0 || x >= this.width || y < 0 || y >= this.height) return Ray.zero();
+        if (x < 0 || x >= this.width || y < 0 || y >= this.height) {
+            return Ray.zero();
+        }
 
         double dirX = x - 0.5 * width.doubleValue();
         double dirY = 0.5 * height.doubleValue() - y;
