@@ -137,19 +137,20 @@ public class Scene {
      * Создание сцены для примера
      */
     public static Scene createExampleScene() {
-        Camera cam = new Camera(1280, 720, 120, 100);
-        cam.transform.setPosition(new Vector3(0, 12, -20));
+        Camera cam = new Camera(1270, 720, 120, 100);
+        cam.transform.setPosition(new Vector3(0, 12, -30));
         cam.transform.setRotation(new Vector3(-17, 0, 0));
 
         Scene scn = new Scene(cam);
 
-        PointLight lamp = new PointLight(Color.white(), 100, new Vector3(0, 15));
+        PointLight lamp1 = new PointLight(Color.white(), 100, new Vector3(-30, 25));
+        PointLight lamp2 = new PointLight(Color.white(), 85, new Vector3(25, 25));
         RenderObject floor = createFloor();
         RenderObject mirrorBox = createMirrorBox();
         RenderObject table = createTable();
         RenderObject balls = createBalls();
 
-        scn.addObjects(lamp, floor, mirrorBox, table, balls);
+        scn.addObjects(lamp1, floor, mirrorBox, table, balls);
 
         return scn;
     }
@@ -179,24 +180,27 @@ public class Scene {
     private static RenderObject createMirrorBox() {
         final RenderObject result = new RenderObject();
 
-        final Rectangle transparent = new Rectangle(100, 100);
-        transparent.setMaterial(new Material(Color.lightGrey(), 1, 0.85));
+        final Rectangle transparent = new Rectangle(50, 100);
+        transparent.setMaterial(new Material(Color.lightGrey(), 2, 0.85));
         final Rectangle grey = new Rectangle(100, 100);
-        grey.setMaterial(new Material(Color.darkGrey(), 1));
+        grey.setMaterial(new Material(Color.darkGrey()));
+
+        final RenderObject mirror = new RenderObject(new Vector3(0, 0, 44));
+        mirror.shape = transparent;
 
         final RenderObject plane1 = new RenderObject(new Vector3(0, 0, 45));
-        plane1.shape = transparent;
+        plane1.shape = grey;
 
         final RenderObject plane2 = new RenderObject(new Vector3(0, 0, -45));
         plane2.shape = grey;
 
         final RenderObject plane3 = new RenderObject(new Vector3(45, 0, 0), new Vector3(0, 90));
-        plane3.shape = transparent;
+        plane3.shape = grey;
 
         final RenderObject plane4 = new RenderObject(new Vector3(-45, 0, 0), new Vector3(0, 90));
         plane4.shape = grey;
 
-        result.addChildren(plane1, plane2, plane3, plane4);
+        result.addChildren(mirror, plane1, plane2, plane3, plane4);
 
         return result;
     }
@@ -265,7 +269,7 @@ public class Scene {
 
     private static RenderObject createTableLeg(Material material) {
         final RenderObject result = new RenderObject();
-        final Rectangle rect = new Rectangle(1, 8, material);
+        final Rectangle rect = new Rectangle(1, 10, material);
 
         final RenderObject plane1 = new RenderObject(new Vector3(0, 0, 0.5));
         plane1.shape = rect;
@@ -285,50 +289,51 @@ public class Scene {
     }
 
     private static RenderObject createBalls() {
-        final RenderObject result = new RenderObject(new Vector3(0, 5));
+        final RenderObject result = new RenderObject();
 
-        double radius = 0.8;
-        final Material blackBall = new Material(Color.black(), 2);
-        final Material whiteBall = new Material(Color.white(), 3);
+        double radius = 0.5;
+        double diameter = 2.0 * radius;
+        final Material blackBall = new Material(Color.black(), 1);
+        final Material whiteBall = new Material(Color.white(), 1);
 
         final Vector<RenderObject> balls = new Vector<>();
         balls.addElement(new RenderObject(new Sphere(radius, blackBall),
-                new Vector3(-10, /*radius * */0.5)));
-        
+                new Vector3(-10, 5.0 + radius)));
+
         balls.addElement(new RenderObject(new Sphere(radius, whiteBall),
-                new Vector3(8, /*radius * */0.5)));
-        
+                new Vector3(8, 5.0 + radius)));
+
         balls.addElement(new RenderObject(new Sphere(radius, whiteBall),
-                new Vector3(9, /*radius * */0.5, 0.5/* * radius*/)));
+                new Vector3(9, 5.0 + radius, 0.5 * diameter)));
         balls.addElement(new RenderObject(new Sphere(radius, whiteBall),
-                new Vector3(9, /*radius * */0.5, -0.5/* * radius*/)));
-        
+                new Vector3(9, 5.0 + radius, -0.5 * diameter)));
+
         balls.addElement(new RenderObject(new Sphere(radius, whiteBall),
-                new Vector3(10, /*radius * */0.5, 1.0/* * radius*/)));
+                new Vector3(10, 5.0 + radius, 1.0 * diameter)));
         balls.addElement(new RenderObject(new Sphere(radius, whiteBall),
-                new Vector3(10, /*radius * */0.5)));
+                new Vector3(10, 5.0 + radius)));
         balls.addElement(new RenderObject(new Sphere(radius, whiteBall),
-                new Vector3(10, /*radius * */0.5, -1.0/* * radius*/)));
-        
+                new Vector3(10, 5.0 + radius, -1.0 * diameter)));
+
         balls.addElement(new RenderObject(new Sphere(radius, whiteBall),
-                new Vector3(11, /*radius * */0.5, 1.5/* * radius*/)));
+                new Vector3(11, 5.0 + radius, 1.5 * diameter)));
         balls.addElement(new RenderObject(new Sphere(radius, whiteBall),
-                new Vector3(11, /*radius * */0.5, 0.5/* * radius*/)));
+                new Vector3(11, 5.0 + radius, 0.5 * diameter)));
         balls.addElement(new RenderObject(new Sphere(radius, whiteBall),
-                new Vector3(11, /*radius * */0.5, -0.5/* * radius*/)));
+                new Vector3(11, 5.0 + radius, -0.5 * diameter)));
         balls.addElement(new RenderObject(new Sphere(radius, whiteBall),
-                new Vector3(11, /*radius * */0.5, -1.5/* * radius*/)));
-        
+                new Vector3(11, 5.0 + radius, -1.5 * diameter)));
+
         balls.addElement(new RenderObject(new Sphere(radius, whiteBall),
-                new Vector3(12, /*radius * */0.5, 2.0/* * radius*/)));
+                new Vector3(12, 5.0 + radius, 2.0 * diameter)));
         balls.addElement(new RenderObject(new Sphere(radius, whiteBall),
-                new Vector3(12, /*radius * */0.5, 1.0/* * radius*/)));
+                new Vector3(12, 5.0 + radius, 1.0 * diameter)));
         balls.addElement(new RenderObject(new Sphere(radius, whiteBall),
-                new Vector3(12, /*radius * */0.5)));
+                new Vector3(12, 5.0 + radius)));
         balls.addElement(new RenderObject(new Sphere(radius, whiteBall),
-                new Vector3(12, /*radius * */0.5, -1.0/* * radius*/)));
+                new Vector3(12, 5.0 + radius, -1.0 * diameter)));
         balls.addElement(new RenderObject(new Sphere(radius, whiteBall),
-                new Vector3(12, /*radius * */0.5, -2.0/* * radius*/)));
+                new Vector3(12, 5.0 + radius, -2.0 * diameter)));
 
         result.addChildren(balls);
 

@@ -19,5 +19,5 @@ public class Constants {
     
     public static final double dPI = 2 * Math.PI;
     
-    public static final double tolerance = 8e-14;
+    public static final double tolerance = 9e-14;
 }

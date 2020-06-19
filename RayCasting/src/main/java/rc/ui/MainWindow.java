@@ -21,7 +21,7 @@ public class MainWindow extends javax.swing.JFrame {
      * Creates new form MainWindow
      */
     public MainWindow() {
-        this.renderer = new RayCaster(scene, 10);
+        this.renderer = new RayCaster(scene, 10, 2);
         initComponents();
     }
 

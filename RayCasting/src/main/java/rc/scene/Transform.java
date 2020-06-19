@@ -168,7 +168,7 @@ public class Transform {
 
         return eul;
     }
-    
+
     private void updateGlobalRotation() {
         if (this.parent != null) {
             this.globalRotation = this.parent.globalRotation.add(this.localRotation);
@@ -201,24 +201,15 @@ public class Transform {
     public void setParent(Transform newParent) {
         if (this.parent != null) {
             this.parent.children.removeElement(this);
+        }
 
-            this.parent = newParent;
-            if (this.parent != null) {
-                this.localPosition = this.globalPosition.subtract(this.parent.globalPosition);
-                this.localRotation = this.globalRotation.subtract(this.parent.globalRotation);
-            } else {
-                this.localPosition = this.globalPosition;
-                this.localRotation = this.globalRotation;
-            }
+        this.parent = newParent;
+        if (this.parent != null) {
+            this.localPosition = this.globalPosition.subtract(this.parent.globalPosition);
+            this.localRotation = this.globalRotation.subtract(this.parent.globalRotation);
         } else {
-            this.parent = newParent;
-            if (this.parent != null) {
-                updateGlobalPosition();
-                updateGlobalRotation();
-            } else {
-                this.localPosition = this.globalPosition;
-                this.localRotation = this.globalRotation;
-            }
+            this.localPosition = this.globalPosition;
+            this.localRotation = this.globalRotation;
         }
     }
 

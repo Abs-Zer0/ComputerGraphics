@@ -24,16 +24,28 @@ public class RayCaster {
 
     private Scene scene;
     private int depth = 10;
+    private int superSample = 1;
     private RenderObject[] shapes;
     private Light[] lights;
+
+    /**
+     *
+     * @param scene Сцена для рендеринга
+     * @param depth Глубина рекурсии
+     * @param superSample Значение суперсэмплинга
+     */
+    public RayCaster(Scene scene, int depth, int superSample) {
+        this.scene = scene;
+        setRecursionDepth(depth);
+        setSuperSampling(superSample);
+    }
 
     /**
      * Создаёт экземпляр класса с сценой для рендера - scene, глубиной рекурсии
      * - depth
      */
     public RayCaster(Scene scene, int depth) {
-        this.scene = scene;
-        setRecursionDepth(depth);
+        this(scene, depth, 1);
     }
 
     /**
@@ -61,6 +73,25 @@ public class RayCaster {
     }
 
     /**
+     *
+     * @return Значение суперсэмплинга
+     */
+    public int getSuperSampling() {
+        return this.superSample;
+    }
+
+    /**
+     *
+     * @param value Новое значение суперсэмплинга, не может быть < 1
+     * @return Реально установленное значение суперсэмплинга
+     */
+    public int setSuperSampling(int value) {
+        this.superSample = value < 1 ? 1 : value;
+
+        return this.superSample;
+    }
+
+    /**
      * Функция рендеринга сцены Возвращает отрендеренное изображение
      */
     public BufferedImage render(int width, int height) {
@@ -73,22 +104,53 @@ public class RayCaster {
                 .map(obj -> (Light) obj)
                 .toArray(Light[]::new);
 
-        final BufferedImage result = new BufferedImage(this.scene.getCamera().width,
-                this.scene.getCamera().height,
+        final Camera currentCamera = this.scene.getCamera();
+        final BufferedImage result = new BufferedImage(currentCamera.width,
+                currentCamera.height,
                 BufferedImage.TYPE_INT_RGB);
         final Color I = this.scene.I();
 
-        for (int j = 0; j < result.getHeight(); j++) {
-            for (int i = 0; i < result.getWidth(); i++) {
-                final Color color = I.product(0.3).add(formula(this.scene.getCamera().castRay(i, j),
-                        this.scene.getCamera().far,
-                        depth));
+        int camWidth = currentCamera.width;
+        int camHeight = currentCamera.height;
+        int countPixels = camWidth * camHeight;
+        for (int j = 0; j < camHeight; j++) {
+            for (int i = 0; i < camWidth; i++) {
+                double progress = (double) (j * camWidth + i) / (double) countPixels;
+                System.out.println(String.format("Progress: %.2f", progress * 100.0) + "%");
+
+                Color color = I.product(0.3);
+                if (this.superSample > 1) {
+                    double step = 1.0 / (double) this.superSample;
+                    double x = i, y = j;
+
+                    color = formula(currentCamera.castRay(x, y),
+                            currentCamera.far,
+                            this.depth);
+                    x += step;
+                    y += step;
+
+                    for (int k = 0; k < this.superSample; k++) {
+                        color = color.blend(formula(currentCamera.castRay(x, y),
+                                currentCamera.far,
+                                this.depth));
+                        x += step;
+                        y += step;
+                    }
+                } else {
+                    color = color.add(formula(currentCamera.castRay(i, j),
+                            currentCamera.far,
+                            this.depth));
+                }
 
                 result.setRGB(i, j, color.getRGB());
             }
         }
 
-        return resizedImage(result, width, height);
+        if (camWidth != width || camHeight != height) {
+            return resizedImage(result, width, height);
+        } else {
+            return result;
+        }
     }
 
     /**
@@ -114,6 +176,12 @@ public class RayCaster {
             double materialReflection = target.getShape().getMaterial().getReflection();
             double materialRefraction = target.getShape().getMaterial().getRefraction();
 
+            double reflect_sub_alpha = materialReflection - materialColor.getAlpha();
+            if (reflect_sub_alpha > 0.0) {
+                double scale = 1.0 / (reflect_sub_alpha + 1);
+                materialReflection *= scale;
+                materialColor.setAlpha(1.0 - materialColor.getAlpha() * scale);
+            }
             Color result = materialColor.premulti();
 
             final ShadowRay[] shadowRays = StreamSupport.stream(Arrays.spliterator(this.lights), true)
@@ -133,16 +201,8 @@ public class RayCaster {
             }
             final Color diffuse = diffuses.parallelStream().reduce(Color.black(), (c1, c2) -> c1.add(c2));
             final Color phong = phongs.parallelStream().reduce(Color.black(), (c1, c2) -> c1.add(c2));
-            //result = result.alphaBlend(diffuse, 0.5);
-            result = result.add(diffuse).product(0.5);
-            result = result.add(phong.product(0.5));
-
-            double reflect_sub_alpha = materialReflection - materialColor.getAlpha();
-            if (reflect_sub_alpha > 0.0) {
-                double scale = 1.0 / (reflect_sub_alpha + 1);
-                materialReflection *= scale;
-                materialColor.setAlpha(1.0 - materialColor.getAlpha() * scale);
-            }
+            result = result.add(diffuse).product(0.4);
+            result = result.add(phong.product(0.3));
 
             if (materialReflection > 0.0 && target.getType() != RayType.OUT) {
                 final Ray reflected = _ray.reflected(target.getNormal());

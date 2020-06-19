@@ -8,7 +8,7 @@ package rc;
 /**
  *
  * @author Абс0лютный Н0ль
- * 
+ *
  * Класс цвета в пространстве RGB с alpha-каналом
  */
 public class Color {
@@ -16,9 +16,9 @@ public class Color {
     private double a, r, g, b;
 
     /**
-    * Создаёт экземпляр класса с прозрачностью - a, коэффициентами красного - r, зелёного - g,
-    * синего - b
-    */
+     * Создаёт экземпляр класса с прозрачностью - a, коэффициентами красного -
+     * r, зелёного - g, синего - b
+     */
     public Color(double a, double r, double g, double b) {
         this.a = a < 0.0 ? 0.0 : (a > 1.0 ? 1.0 : a);
         this.r = r;
@@ -27,15 +27,16 @@ public class Color {
     }
 
     /**
-    * Создаёт экземпляр класса с коэффициентами красного - r, зелёного - g, синего - b
-    */
+     * Создаёт экземпляр класса с коэффициентами красного - r, зелёного - g,
+     * синего - b
+     */
     public Color(double r, double g, double b) {
         this(1, r, g, b);
     }
 
     /**
-    * Значение alpha-канала
-    */
+     * Значение alpha-канала
+     */
     public double getAlpha() {
         return this.a;
     }
@@ -45,8 +46,8 @@ public class Color {
     }
 
     /**
-    * Значение коэффициента красного
-    */
+     * Значение коэффициента красного
+     */
     public double getRed() {
         return this.r;
     }
@@ -56,8 +57,8 @@ public class Color {
     }
 
     /**
-    * Значение коэффициента зелёного
-    */
+     * Значение коэффициента зелёного
+     */
     public double getGreen() {
         return this.g;
     }
@@ -67,8 +68,8 @@ public class Color {
     }
 
     /**
-    * Значение коэффициента синего
-    */
+     * Значение коэффициента синего
+     */
     public double getBlue() {
         return this.b;
     }
@@ -79,11 +80,11 @@ public class Color {
 
     /**
      * Returns the RGB value representing the color in the default sRGB
-     * {@link ColorModel}.
-     * (Bits 24-31 are alpha, 16-23 are red, 8-15 are green, 0-7 are
-     * blue).
+     * {@link ColorModel}. (Bits 24-31 are alpha, 16-23 are red, 8-15 are green,
+     * 0-7 are blue).
+     *
      * @return the RGB value of the color in the default sRGB
-     *         {@code ColorModel}.
+     * {@code ColorModel}.
      * @see java.awt.image.ColorModel#getRGBdefault
      * @see #getRed
      * @see #getGreen
@@ -112,8 +113,8 @@ public class Color {
     }
 
     /**
-    * Сложение цветов
-    */
+     * Сложение цветов
+     */
     public Color add(Color other) {
         double na = (this.a + other.a) * 0.5;
         double nr = this.r + other.r;
@@ -124,8 +125,8 @@ public class Color {
     }
 
     /**
-    * Вычитание цветов
-    */
+     * Вычитание цветов
+     */
     public Color sub(Color other) {
         double na = (this.a + other.a) * 0.5;
         double nr = this.r - other.r;
@@ -136,8 +137,8 @@ public class Color {
     }
 
     /**
-    * Преумножение цвета на коэффициент value
-    */
+     * Преумножение цвета на коэффициент value
+     */
     public Color product(double value) {
         double nr = this.r * value;
         double ng = this.g * value;
@@ -147,8 +148,8 @@ public class Color {
     }
 
     /**
-    * Альфа-смешивание цветов
-    */
+     * Альфа-смешивание цветов
+     */
     public Color alphaBlend(Color other) {
         double na = other.a + this.a * (1.0 - other.a);
         if (na == 0.0) {
@@ -164,19 +165,31 @@ public class Color {
     }
 
     /**
-    * Альфа-смешивание цветов с заданным значение alpha-канала - alpha
-    */
+     * Альфа-смешивание цветов с заданным значение alpha-канала - alpha
+     */
     public Color alphaBlend(Color other, double alpha) {
         return alphaBlend(new Color(alpha, other.r, other.g, other.b));
     }
 
     /**
-    * Предварительно загашенный alpha-каналом цвет
-    * Возвращает новый цвет с alpha-каналом = 1 и каждым коэффициентом умноженным на старое
-    * значение alpha-канала
-    */
+     * Предварительно загашенный alpha-каналом цвет Возвращает новый цвет с
+     * alpha-каналом = 1 и каждым коэффициентом умноженным на старое значение
+     * alpha-канала
+     */
     public Color premulti() {
         return new Color(this.a * this.r, this.a * this.g, this.a * this.b);
+    }
+
+    /**
+     *
+     * @param other
+     * @return
+     */
+    public Color blend(Color other) {
+        return new Color(0.5 * (this.a + other.a),
+                0.5 * (this.r + other.r),
+                0.5 * (this.g + other.g),
+                0.5 * (this.b + other.b));
     }
 
     @Override
